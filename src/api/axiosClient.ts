@@ -2,9 +2,15 @@ import axios from "axios";
 
 let serverIp: string | null = null;
 
+export const examCandidate = localStorage.getItem("examCandidate") || null;
+
 export const axiosClient = axios.create({
   baseURL: `http://${serverIp}:4001/api/candidate/`,
   timeout: 10000,
+  headers: {
+    candidate: examCandidate,
+    "Cache-Control": "no-cache",
+  },
 });
 
 export const setApiBaseIp = (ip: string) => {

@@ -9,6 +9,7 @@ import { Modal } from "react-bootstrap";
 import { green } from "@mui/material/colors";
 import { browserName, browserVersion } from "react-device-detect";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 function CandidateLoginPage() {
   const [indexNumber, setIndexNumber] = useState("");
@@ -17,6 +18,8 @@ function CandidateLoginPage() {
   const [show, setShow] = useState(false);
 
   const [imageUrl, setImageUrl] = useState("");
+
+  const navigate = useNavigate();
 
   /*************  ✨ Windsurf Command ⭐  *************/
   /**
@@ -60,6 +63,27 @@ function CandidateLoginPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, begin!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setLoading(true);
+        try {
+          const { data } = await axiosClient.post("login", {
+            indexNumber,
+            browserName,
+            browserVersion,
+          });
+
+          if (data) {
+            localStorage.setItem("examCandidate", data.id);
+            navigate("/instructions");
+            console.log(data);
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoading(false);
+        }
+      }
     });
   };
   return (

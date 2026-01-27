@@ -13,11 +13,6 @@ export const ServerProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [serverIp, setServerIpState] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   const savedIp = localStorage.getItem("serverIp");
-  //   if (savedIp) setServerIpState(savedIp);
-  // }, []);
-
   useEffect(() => {
     const savedIp = localStorage.getItem("serverIp");
     if (savedIp) {
