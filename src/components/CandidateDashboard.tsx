@@ -26,7 +26,7 @@ function CandidateDashboard() {
 
   const activeSubject = useSelector((state: any) => state.activeSubject);
 
-  const subjectAnswered = useSelector((state: any) =>
+  const subjectAnswered = useSelector(
     selectAnsweredCountBySubject(activeSubject?._id),
   );
 

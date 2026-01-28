@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import parser from "html-react-parser";
 import { Button, CardActionArea, Stack, Typography } from "@mui/material";
@@ -8,6 +8,8 @@ import { answerQuestion } from "../redux/answerSlice";
 
 function QuestionDisplay() {
   const dispatch = useDispatch();
+
+  //console.log(state);
   const activeSubject = useSelector((state) => state.activeSubject);
   const questionBanks = useSelector((state) => state.questionBanksSlice);
   const navigations = useSelector((state) => state.questionNavigationSlice);
@@ -16,6 +18,8 @@ function QuestionDisplay() {
 
   const questions =
     questionBanks.find((c) => c.subject === activeSubject._id)?.questions || [];
+
+  //console.log(questions);
 
   const currentNavigation = navigations.find(
     (c) => c.subject === activeSubject._id,

@@ -1,6 +1,4 @@
-import require$$0, { Menu, ipcMain, app, BrowserWindow, globalShortcut } from "electron";
-import { fileURLToPath } from "node:url";
-import path$2 from "node:path";
+import require$$0 from "electron";
 import require$$1$1 from "fs";
 import require$$1 from "path";
 import require$$3 from "https";
@@ -10159,76 +10157,6 @@ const index = /* @__PURE__ */ _mergeNamespaces({
   },
   default: _default
 }, [dist$1]);
-const __dirname$1 = path$2.dirname(fileURLToPath(import.meta.url));
-process.env.APP_ROOT = path$2.join(__dirname$1, "..");
-const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
-const MAIN_DIST = path$2.join(process.env.APP_ROOT, "dist-electron");
-const RENDERER_DIST = path$2.join(process.env.APP_ROOT, "dist");
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path$2.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
-let mainWindow = null;
-const isDev = process.env.VITE_DEV_SERVER_URL !== void 0;
-Menu.setApplicationMenu(null);
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    // width: 1200,
-    // height: 800,
-    fullscreen: true,
-    kiosk: true,
-    webPreferences: {
-      preload: path$2.join(__dirname$1, "preload.js"),
-      contextIsolation: true,
-      nodeIntegration: false
-    }
-  });
-  if (isDev) {
-    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
-  } else {
-    mainWindow.loadFile(path$2.join(__dirname$1, "../dist-electron/index.html"));
-  }
-  mainWindow.on("closed", () => mainWindow = null);
-}
-ipcMain.handle("ping-server", async (_2, ip) => {
-  console.log(`Pinging server at ${ip}`);
-  return true;
-});
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
-app.whenReady().then(async () => {
-  createWindow();
-  if (!app.isPackaged) {
-    (async () => {
-      try {
-        const installExtension2 = (await Promise.resolve().then(() => index)).default;
-        await installExtension2(REACT_DEVELOPER_TOOLS, {
-          loadExtensionOptions: { allowFileAccess: true }
-        });
-        await installExtension2(REDUX_DEVTOOLS, {
-          loadExtensionOptions: { allowFileAccess: true }
-        });
-        console.log("DevTools installed");
-      } catch (err2) {
-        console.error("Failed to install devtools:", err2);
-      }
-    })();
-  }
-  globalShortcut.register("Control+Shift+D", () => {
-    const win2 = BrowserWindow.getFocusedWindow();
-    if (win2) win2.webContents.toggleDevTools();
-  });
-});
-app.on("will-quit", () => {
-  globalShortcut.unregisterAll();
-});
 export {
-  MAIN_DIST,
-  RENDERER_DIST,
-  VITE_DEV_SERVER_URL
+  index as i
 };

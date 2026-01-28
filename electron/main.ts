@@ -1,9 +1,11 @@
 import { app, BrowserWindow, ipcMain, Menu, globalShortcut } from "electron";
-import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import {
+  REACT_DEVELOPER_TOOLS,
+  REDUX_DEVTOOLS,
+} from "electron-devtools-installer";
 
-const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // The built directory structure
@@ -77,18 +79,33 @@ app.on("activate", () => {
 });
 
 //app.whenReady().then(createWindow);
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   createWindow();
 
-  // Toggle DevTools with Ctrl+Shift+D
-  globalShortcut.register("Control+Shift+D", () => {
-    if (!mainWindow) return;
+  if (!app.isPackaged) {
+    (async () => {
+      // ← Wrap in async IIFE
+      try {
+        const installExtension = (await import("electron-devtools-installer"))
+          .default;
 
-    if (mainWindow.webContents.isDevToolsOpened()) {
-      mainWindow.webContents.closeDevTools();
-    } else {
-      mainWindow.webContents.openDevTools({ mode: "bottom" });
-    }
+        await installExtension(REACT_DEVELOPER_TOOLS, {
+          loadExtensionOptions: { allowFileAccess: true },
+        });
+        await installExtension(REDUX_DEVTOOLS, {
+          loadExtensionOptions: { allowFileAccess: true },
+        });
+
+        console.log("DevTools installed");
+      } catch (err) {
+        console.error("Failed to install devtools:", err);
+      }
+    })();
+  }
+
+  globalShortcut.register("Control+Shift+D", () => {
+    const win = BrowserWindow.getFocusedWindow();
+    if (win) win.webContents.toggleDevTools();
   });
 });
 

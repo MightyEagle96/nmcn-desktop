@@ -10,6 +10,9 @@ import { setActiveQuestions } from "../redux/questionControlSlice";
 import { setQuestionNavigation } from "../redux/questionNavigationSlice";
 import { useEffect } from "react";
 import QuestionDisplay from "../components/QuestionDisplay";
+import ExamCountdown from "../components/ExamDuration";
+import { setQuestionBanks } from "../redux/questionBanksSlice";
+import ButtonsDisplay from "./ButtonsDisplay";
 
 function ExamPage() {
   const dispatch = useDispatch();
@@ -31,6 +34,7 @@ function ExamPage() {
       if (examQuestions) {
         const { data } = examQuestions;
         if (data) {
+          // console.log(data);
           const subjects = data.map((c: any) => c.subject);
 
           const questionBanks = data.map((c: any) => {
@@ -40,11 +44,13 @@ function ExamPage() {
             };
           });
 
+          console.log(questionBanks);
+
           dispatch(setSubjects(subjects));
 
           dispatch(setActiveSubject(subjects[0]));
 
-          dispatch(setActiveQuestions(questionBanks));
+          dispatch(setQuestionBanks(questionBanks));
 
           dispatch(
             setQuestionNavigation(
@@ -53,8 +59,6 @@ function ExamPage() {
               }),
             ),
           );
-
-          console.log(data);
         }
       }
     } catch (error) {
@@ -70,7 +74,12 @@ function ExamPage() {
       <div className="row m-0" style={{ height: "100vh" }}>
         <div className="col-lg-10 p-4">
           <SubjectPlate />
+
+          <div className="d-flex justify-content-end">
+            <ExamCountdown />
+          </div>
           <QuestionDisplay />
+          <ButtonsDisplay />
         </div>
         <div className="col-lg-2 bg-light">
           <CandidateDashboard />

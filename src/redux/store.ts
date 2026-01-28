@@ -7,7 +7,6 @@ import networkSlice from "./networkSlice";
 
 import timePercentageSlice from "./timePercentageSlice";
 import subjectsSlice from "./subjectsSlice";
-import questionControlSlice from "./questionControlSlice";
 import questionBanksSlice from "./questionBanksSlice";
 import questionNavigationSlice from "./questionNavigationSlice";
 import activeSubject from "./activeSubject";
