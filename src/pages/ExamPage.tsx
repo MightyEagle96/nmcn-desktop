@@ -102,7 +102,7 @@ function ExamPage() {
         <div className="col-lg-10 p-4">
           <SubjectPlate />
 
-          <div className="d-flex justify-content-end">
+          <div className="">
             <ExamCountdown />
           </div>
           <QuestionDisplay />

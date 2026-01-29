@@ -1,6 +1,6 @@
 import { Button, TextField, Typography, Alert, Avatar } from "@mui/material";
 import logo from "../assets/logo.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Close, Login } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import axiosClient from "../api/axiosClient";
@@ -86,6 +86,10 @@ function CandidateLoginPage() {
       }
     });
   };
+
+  useEffect(() => {
+    localStorage.removeItem("examCandidate");
+  }, []);
   return (
     <div>
       <div className="row vh-100 m-0">

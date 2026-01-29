@@ -8,7 +8,6 @@ export const axiosClient = axios.create({
   baseURL: `http://${serverIp}:4001/api/candidate/`,
   timeout: 10000,
   headers: {
-    candidate: examCandidate,
     "Cache-Control": "no-cache",
   },
 });
@@ -28,7 +27,13 @@ axiosClient.interceptors.request.use(
       config.baseURL = `http://${serverIp}:4001/api/candidate/`;
     }
 
-    // console.log("[API]", config.method?.toUpperCase(), config.url);
+    const examCandidate = localStorage.getItem("examCandidate");
+
+    if (examCandidate) {
+      config.headers["candidate"] = examCandidate;
+    } else {
+      delete config.headers["candidate"];
+    }
 
     return config;
   },

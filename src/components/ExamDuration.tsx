@@ -1,15 +1,17 @@
 import { useEffect, useState, useRef } from "react";
-import { Alert } from "@mui/material";
+import { Alert, Button } from "@mui/material";
 import axiosClient from "../api/axiosClient";
 import { useDispatch, useSelector } from "react-redux";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { setNetwork } from "../redux/networkSlice";
 import { totalQuestionsCount } from "../redux/questionBanksSlice";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function ExamCountdown() {
   const [duration, setDuration] = useState(0); // ms
   const [timeLeft, setTimeLeft] = useState(0); // ms
+  const [submitting, setSubmitting] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ function ExamCountdown() {
 
   const lastSentRef = useRef<number | null>(null);
 
+  const enableSubmitButton = answeredQuestions.length / totalQuestions >= 0.8;
   const body = {
     totalQuestions,
     totalScore,
@@ -102,14 +105,62 @@ function ExamCountdown() {
     }
   };
 
+  const submitExamination = () => {
+    Swal.fire({
+      title: "Submit Examination?",
+      text: "Are you sure you want to submit your examination now?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, submit!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        submitExamFunc();
+      }
+    });
+  };
+
+  const submitExamFunc = async () => {
+    setSubmitting(true);
+    try {
+      await axiosClient.post("submitexam", body);
+      navigate("/concluded");
+    } catch (error: any) {
+      if (error.status === 401) {
+        navigate("/login");
+      }
+    }
+
+    setSubmitting(false);
+  };
+
   // ---------------------------
   // RENDER
   // ---------------------------
   return (
     <>
-      <Alert severity={severity}>
-        Time Remaining: <strong>{formatTime(timeLeft)}</strong>
-      </Alert>
+      <div className="row align-items-center justify-content-end g-3">
+        {/* TIMER */}
+        <div className="col-auto d-flex justify-content-end">
+          <Alert severity={severity} sx={{ mb: 0 }}>
+            Time Remaining: <strong>{formatTime(timeLeft)}</strong>
+          </Alert>
+        </div>
+
+        {/* SUBMIT BUTTON */}
+        <div className="col-auto">
+          <Button
+            disabled={!enableSubmitButton}
+            variant="contained"
+            color="error"
+            size="large"
+            onClick={submitExamination}
+          >
+            SUBMIT EXAMINATION
+          </Button>
+        </div>
+      </div>
 
       <div className="d-none">
         {duration > 0 && (
