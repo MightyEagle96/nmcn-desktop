@@ -55,6 +55,11 @@ function ExamCountdown() {
       dispatch(setNetwork(false));
 
       if (error.status === 401) {
+        dispatch({ type: "exam/reset" });
+        // Clear candidate session
+        localStorage.removeItem("examCandidate");
+        delete axiosClient.defaults.headers.candidate;
+
         navigate("/login");
       }
     }
@@ -130,6 +135,13 @@ function ExamCountdown() {
     setSubmitting(true);
     try {
       await axiosClient.post("submitexam", body);
+
+      // 🔥 RESET EVERYTHING
+      dispatch({ type: "exam/reset" });
+
+      // Clear candidate session
+      localStorage.removeItem("examCandidate");
+      delete axiosClient.defaults.headers.candidate;
       navigate("/concluded");
     } catch (error: any) {
       if (error.status === 401) {
@@ -165,6 +177,7 @@ function ExamCountdown() {
             size="large"
             onClick={submitExamination}
             loading={submitting}
+            loadingPosition="end"
             endIcon={<Send />}
           >
             SUBMIT EXAMINATION

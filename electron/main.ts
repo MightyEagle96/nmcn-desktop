@@ -73,29 +73,29 @@ app.whenReady().then(async () => {
   createWindow();
 
   // DevTools installation only in dev
-  if (isDev) {
-    try {
-      const installExtension = (await import("electron-devtools-installer"))
-        .default;
+  // if (isDev) {
+  //   try {
+  //     const installExtension = (await import("electron-devtools-installer"))
+  //       .default;
 
-      await installExtension(REACT_DEVELOPER_TOOLS, {
-        loadExtensionOptions: { allowFileAccess: true },
-      });
-      await installExtension(REDUX_DEVTOOLS, {
-        loadExtensionOptions: { allowFileAccess: true },
-      });
+  //     await installExtension(REACT_DEVELOPER_TOOLS, {
+  //       loadExtensionOptions: { allowFileAccess: true },
+  //     });
+  //     await installExtension(REDUX_DEVTOOLS, {
+  //       loadExtensionOptions: { allowFileAccess: true },
+  //     });
 
-      console.log("React & Redux DevTools installed");
-    } catch (err) {
-      console.error("Failed to install DevTools:", err);
-    }
-  }
+  //     console.log("React & Redux DevTools installed");
+  //   } catch (err) {
+  //     console.error("Failed to install DevTools:", err);
+  //   }
+  // }
 
-  // Shortcut: toggle DevTools with Ctrl+Shift+D
-  globalShortcut.register("Control+Shift+D", () => {
-    const win = BrowserWindow.getFocusedWindow();
-    if (win) win.webContents.toggleDevTools();
-  });
+  // // Shortcut: toggle DevTools with Ctrl+Shift+D
+  // globalShortcut.register("Control+Shift+D", () => {
+  //   const win = BrowserWindow.getFocusedWindow();
+  //   if (win) win.webContents.toggleDevTools();
+  // });
 });
 
 app.on("will-quit", () => {
