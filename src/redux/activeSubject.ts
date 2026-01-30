@@ -6,9 +6,7 @@ const activeSubject = createSlice({
   name: "activeSubject",
   initialState,
   reducers: {
-    setActiveSubject: (state, action) => {
-      return (state = action.payload);
-    },
+    setActiveSubject: (_, action) => action.payload,
   },
 });
 

@@ -7,6 +7,7 @@ import { setNetwork } from "../redux/networkSlice";
 import { totalQuestionsCount } from "../redux/questionBanksSlice";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { Send } from "@mui/icons-material";
 
 function ExamCountdown() {
   const [duration, setDuration] = useState(0); // ms
@@ -16,12 +17,15 @@ function ExamCountdown() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const answeredQuestions = useSelector((state) => state.answerSlice);
+  const answeredQuestions = useSelector((state: any) => state.answerSlice);
   const totalQuestions = useSelector(totalQuestionsCount);
 
-  const totalScore = answeredQuestions.reduce((acc, val) => acc + val.score, 0);
+  const totalScore = answeredQuestions.reduce(
+    (acc: number, val: any) => acc + val.score,
+    0,
+  );
 
-  const network = useSelector((state) => state.networkSlice);
+  const network = useSelector((state: any) => state.networkSlice);
 
   const lastSentRef = useRef<number | null>(null);
 
@@ -156,6 +160,8 @@ function ExamCountdown() {
             color="error"
             size="large"
             onClick={submitExamination}
+            loading={submitting}
+            endIcon={<Send />}
           >
             SUBMIT EXAMINATION
           </Button>
@@ -169,6 +175,7 @@ function ExamCountdown() {
             isPlaying={network}
             duration={duration / 1000} // seconds
             initialRemainingTime={duration / 1000}
+            colors={"#fff"}
             onUpdate={(remainingSeconds) => {
               const remainingMs = remainingSeconds * 1000;
 
@@ -183,7 +190,6 @@ function ExamCountdown() {
                 sendResponses(remainingMs);
               }
             }}
-            colors={["#000", "#f50", "#e91e63", "#9c27b0"]}
           >
             {({ remainingTime }) => (
               <span>{formatTime(remainingTime * 1000)}</span>

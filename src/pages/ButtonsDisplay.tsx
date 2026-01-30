@@ -3,39 +3,43 @@ import { useDispatch, useSelector } from "react-redux";
 import { setQuestionNumber } from "../redux/questionNavigationSlice";
 
 function ButtonsDisplay() {
-  const activeSubject = useSelector((state) => state.activeSubject);
-  const questionBanks = useSelector((state) => state.questionBanksSlice);
+  const activeSubject = useSelector((state: any) => state.activeSubject);
+  const questionBanks = useSelector((state: any) => state.questionBanksSlice);
   const questions =
-    questionBanks.find((c) => c.subject === activeSubject._id)?.questions || [];
+    questionBanks.find((c: any) => c.subject === activeSubject._id)
+      ?.questions || [];
 
   const dispatch = useDispatch();
 
-  const changeQuestion = (index) => {
+  const changeQuestion = (index: number) => {
     const subject = activeSubject._id;
     dispatch(setQuestionNumber({ index, subject }));
   };
-  const navigations = useSelector((state) => state.questionNavigationSlice);
-
-  const answeredQuestions = useSelector((state) => state.answerSlice);
-
-  const currentNavigation = navigations.find(
-    (c) => c.subject === activeSubject._id,
+  const navigations = useSelector(
+    (state: any) => state.questionNavigationSlice,
   );
 
-  const answeredOptions = (questionId) => {
+  const answeredQuestions = useSelector((state: any) => state.answerSlice);
+
+  const currentNavigation = navigations.find(
+    (c: any) => c.subject === activeSubject._id,
+  );
+
+  const answeredOptions = (questionId: string) => {
     const index = answeredQuestions.findIndex(
-      (c) => c.questionId === questionId && c.subject === activeSubject._id,
+      (c: any) =>
+        c.questionId === questionId && c.subject === activeSubject._id,
     );
 
     if (index >= 0) return true;
     return false;
   };
-  const isCurrent = (questionIndex) => {
+  const isCurrent = (questionIndex: number) => {
     return currentNavigation.questionIndex === questionIndex;
   };
   return (
     <div className="mt-4">
-      {questions.map((c, i) => (
+      {questions.map((c: any, i: number) => (
         <Button
           className="me-1 mb-1"
           variant={

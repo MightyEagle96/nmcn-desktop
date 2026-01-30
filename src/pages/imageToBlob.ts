@@ -1,4 +1,4 @@
-export const base64ToBlobUrl = (base64, mimeType = "image/png") => {
+export const base64ToBlobUrl = (base64: string, mimeType = "image/png") => {
   // If the base64 has a prefix, extract it
   const hasPrefix = base64.startsWith("data:");
 

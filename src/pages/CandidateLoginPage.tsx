@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 function CandidateLoginPage() {
   const [indexNumber, setIndexNumber] = useState("");
   const [loading, setLoading] = useState(false);
-  const [candidate, setCandidate] = useState(null);
+  const [candidate, setCandidate] = useState<any>(null);
   const [show, setShow] = useState(false);
 
   const [imageUrl, setImageUrl] = useState("");
@@ -45,7 +45,7 @@ function CandidateLoginPage() {
         if (blobUrl) setImageUrl(blobUrl);
       }
       setShow(true);
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error.data);
     } finally {
       setLoading(false);
@@ -187,7 +187,7 @@ function CandidateLoginPage() {
                 <Typography color={"gray"} gutterBottom variant="overline">
                   Subject Combinations
                 </Typography>
-                {candidate.subjects.map((c, i) => (
+                {candidate.subjects.map((c: any, i: number) => (
                   <Typography gutterBottom textTransform={"uppercase"} key={i}>
                     {c.name} <small>({c.code})</small>{" "}
                   </Typography>

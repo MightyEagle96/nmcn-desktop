@@ -1,14 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = [];
+const initialState: any[] = [];
 
 export const questionNavigationSlice = createSlice({
   name: "questionNavigation",
   initialState,
   reducers: {
-    setQuestionNavigation: (state, action) => {
-      return (state = action.payload);
-    },
+    setQuestionNavigation: (_, action) => action.payload,
     setQuestionNumber: (state, action) => {
       return state.map((obj) => {
         if (obj.subject === action.payload.subject) {

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = [];
+const initialState: any[] = [];
 
 export const answerSlice = createSlice({
   name: "answeredQuestions",
@@ -10,7 +10,7 @@ export const answerSlice = createSlice({
       const exist = state.findIndex(
         (c) =>
           c.questionId === action.payload.questionId &&
-          c.subject === action.payload.subject
+          c.subject === action.payload.subject,
       );
 
       if (exist < 0) return [...state, action.payload];
@@ -22,9 +22,7 @@ export const answerSlice = createSlice({
         return obj;
       });
     },
-    setResponses: (state, action) => {
-      return (state = action.payload);
-    },
+    setResponses: (_, action) => action.payload,
   },
 });
 
@@ -32,7 +30,8 @@ export const { answerQuestion, setResponses } = answerSlice.actions;
 
 export default answerSlice.reducer;
 
-export const selectAnsweredCount = (state) => state.answerSlice.length;
+export const selectAnsweredCount = (state: any) => state.answerSlice.length;
 
-export const selectAnsweredCountBySubject = (subjectId) => (state) =>
-  state.answerSlice.filter((q) => q.subject === subjectId).length;
+export const selectAnsweredCountBySubject =
+  (subjectId: string) => (state: any) =>
+    state.answerSlice.filter((q: any) => q.subject === subjectId).length;

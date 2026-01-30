@@ -24,7 +24,7 @@ function ExamPage() {
 
   const navigate = useNavigate();
 
-  const network = useSelector((state) => state.networkSlice);
+  const network = useSelector((state: any) => state.networkSlice);
 
   const [loading, setLoading] = useState(false);
   const getData = async () => {
@@ -65,14 +65,14 @@ function ExamPage() {
 
           dispatch(
             setQuestionNavigation(
-              subjects.map((c) => {
+              subjects.map((c: any) => {
                 return { subject: c._id, questionIndex: 0 };
               }),
             ),
           );
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error.status === 401) {
         navigate("/login");
       }

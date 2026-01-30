@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { setActiveSubject } from "../redux/activeSubject";
 
 function SubjectPlate() {
-  const subjects = useSelector((state) => state.subjectsSlice);
+  const subjects = useSelector((state: any) => state.subjectsSlice);
 
   const dispatch = useDispatch();
-  const activeSubject = useSelector((state) => state.activeSubject);
+  const activeSubject = useSelector((state: any) => state.activeSubject);
   return (
     <div className="pt-4">
       <div className="row">
-        {subjects.map((c, i) => (
+        {subjects.map((c: any, i: number) => (
           <div
             key={i}
             className="col-lg-3 p-0 m-1 rounded"

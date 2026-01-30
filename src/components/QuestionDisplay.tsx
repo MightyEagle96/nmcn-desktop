@@ -10,19 +10,22 @@ function QuestionDisplay() {
   const dispatch = useDispatch();
 
   //console.log(state);
-  const activeSubject = useSelector((state) => state.activeSubject);
-  const questionBanks = useSelector((state) => state.questionBanksSlice);
-  const navigations = useSelector((state) => state.questionNavigationSlice);
-  const answeredQuestions = useSelector((state) => state.answerSlice);
-  const network = useSelector((state) => state.networkSlice);
+  const activeSubject = useSelector((state: any) => state.activeSubject);
+  const questionBanks = useSelector((state: any) => state.questionBanksSlice);
+  const navigations = useSelector(
+    (state: any) => state.questionNavigationSlice,
+  );
+  const answeredQuestions = useSelector((state: any) => state.answerSlice);
+  const network = useSelector((state: any) => state.networkSlice);
 
   const questions =
-    questionBanks.find((c) => c.subject === activeSubject._id)?.questions || [];
+    questionBanks.find((c: any) => c.subject === activeSubject._id)
+      ?.questions || [];
 
   //console.log(questions);
 
   const currentNavigation = navigations.find(
-    (c) => c.subject === activeSubject._id,
+    (c: any) => c.subject === activeSubject._id,
   );
 
   const alphabetArray = Array.from({ length: 26 }, (_, i) => ({
@@ -54,7 +57,11 @@ function QuestionDisplay() {
     }
   };
 
-  const answerFunc = (answer, correctAnswer, questionId) => {
+  const answerFunc = (
+    answer: string,
+    correctAnswer: string,
+    questionId: string,
+  ) => {
     if (!network) return;
     dispatch(
       answerQuestion({
@@ -67,9 +74,9 @@ function QuestionDisplay() {
     );
   };
 
-  const answeredOptions = (answer, questionId) => {
+  const answeredOptions = (answer: string, questionId: string) => {
     const index = answeredQuestions.findIndex(
-      (c) =>
+      (c: any) =>
         c.questionId === questionId &&
         c.subject === activeSubject._id &&
         answer === c.answer,
@@ -78,7 +85,7 @@ function QuestionDisplay() {
   };
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       const key = event.key.toUpperCase();
 
       // Navigation keys
@@ -128,7 +135,7 @@ function QuestionDisplay() {
             </div>
             <div className="col-lg-6">
               {questions[currentNavigation.questionIndex].options.map(
-                (c, i) => (
+                (c: any, i: number) => (
                   <CardActionArea
                     sx={
                       answeredOptions(

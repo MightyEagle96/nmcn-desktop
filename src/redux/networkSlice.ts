@@ -6,9 +6,7 @@ export const networkSlice = createSlice({
   name: "networkControl",
   initialState,
   reducers: {
-    setNetwork: (state, action) => {
-      return (state = action.payload);
-    },
+    setNetwork: (_, action) => action.payload,
   },
 });
 

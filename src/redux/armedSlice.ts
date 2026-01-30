@@ -6,9 +6,7 @@ export const armedSlice = createSlice({
   name: "armed",
   initialState,
   reducers: {
-    setArmed: (state, action) => {
-      return (state = action.payload);
-    },
+    setArmed: (_, action) => action.payload,
   },
 });
 

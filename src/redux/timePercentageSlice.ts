@@ -6,9 +6,7 @@ export const timePercentageSlice = createSlice({
   name: "timePercentage",
   initialState,
   reducers: {
-    setTimePercentage: (state, action) => {
-      return (state = action.payload);
-    },
+    setTimePercentage: (_, action) => action.payload,
   },
 });
 

@@ -6,9 +6,7 @@ export const procedureSlice = createSlice({
   name: "procedure",
   initialState,
   reducers: {
-    setProcedure: (state, action) => {
-      return (state = action.payload);
-    },
+    setProcedure: (_, action) => action.payload,
   },
 });
 

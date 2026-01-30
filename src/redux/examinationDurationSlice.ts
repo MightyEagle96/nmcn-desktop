@@ -6,9 +6,7 @@ const examinationDurationSlice = createSlice({
   name: "examinationDuration",
   initialState,
   reducers: {
-    setExaminationDuration: (state, action) => {
-      return (state = action.payload);
-    },
+    setExaminationDuration: (_, action) => action.payload,
   },
 });
 
