@@ -1,10 +1,9 @@
 import { app, BrowserWindow, Menu, globalShortcut } from "electron";
-import path from "node:path";
+import path from "path";
 import { fileURLToPath } from "node:url";
-import {
-  REACT_DEVELOPER_TOOLS,
-  REDUX_DEVTOOLS,
-} from "electron-devtools-installer";
+import { execSync } from "node:child_process";
+import fs from "fs";
+import { exec } from "child_process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,7 +14,83 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 
 let mainWindow: BrowserWindow | null = null;
 
-// Remove default menu
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on("second-instance", () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
+
+function isVirtualMachine(): boolean {
+  try {
+    const output = execSync("wmic computersystem get model,manufacturer", {
+      encoding: "utf8",
+    });
+
+    const lowered = output.toLowerCase();
+
+    return (
+      lowered.includes("vmware") ||
+      lowered.includes("virtualbox") ||
+      lowered.includes("qemu") ||
+      lowered.includes("hyper-v") ||
+      lowered.includes("kvm")
+    );
+  } catch {
+    return false;
+  }
+}
+
+const knownDrives = new Set<string>(); // Tracks seen removable drive letters
+
+function checkForNewUSB() {
+  exec(
+    'powershell -Command "Get-Disk | Where-Object BusType -eq USB | Select-Object -ExpandProperty Number"',
+    (err, stdout) => {
+      if (err) {
+        console.error("PowerShell error:", err);
+        return;
+      }
+
+      // Alternative simpler query for removable logical drives:
+      // exec('wmic logicaldisk where drivetype=2 get deviceid', ...)
+
+      const output = stdout.trim();
+      if (!output) return;
+
+      const currentUSB = new Set(
+        output
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean),
+      );
+
+      for (const drive of currentUSB) {
+        if (!knownDrives.has(drive)) {
+          console.log("New USB drive detected:", drive);
+          knownDrives.add(drive);
+          app.quit(); // Or your logic
+        }
+      }
+
+      // Optional: remove disconnected ones
+      for (const old of knownDrives) {
+        if (!currentUSB.has(old)) knownDrives.delete(old);
+      }
+    },
+  );
+}
+
+// Poll every 3–5 seconds
+setInterval(checkForNewUSB, 4000);
+checkForNewUSB(); // Run once at start
+
 Menu.setApplicationMenu(null);
 
 const isDev = process.env.VITE_DEV_SERVER_URL !== undefined;
@@ -37,6 +112,9 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     fullscreen: true,
     kiosk: true,
+    alwaysOnTop: true,
+    focusable: true,
+
     icon: path.join(__dirname, "../../build/icon.ico"),
     webPreferences: {
       preload: preloadPath,
@@ -96,6 +174,26 @@ app.whenReady().then(async () => {
   //   const win = BrowserWindow.getFocusedWindow();
   //   if (win) win.webContents.toggleDevTools();
   // });
+
+  // Disable system shortcuts (best effort)
+  const shortcuts = [
+    "Alt+Tab",
+    "Alt+F4",
+    "Command+Q",
+    "Control+Shift+Esc",
+    "Command+Option+Esc",
+    "F11",
+  ];
+
+  if (isVirtualMachine()) {
+    app.quit();
+  }
+
+  shortcuts.forEach((key) => {
+    globalShortcut.register(key, () => {
+      return false;
+    });
+  });
 });
 
 app.on("will-quit", () => {

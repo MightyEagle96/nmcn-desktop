@@ -1,45 +1,98 @@
-import { Menu as a, app as n, BrowserWindow as i, globalShortcut as c } from "electron";
-import e from "node:path";
-import { fileURLToPath as p } from "node:url";
-const t = e.dirname(p(import.meta.url));
-process.env.APP_ROOT = e.join(t, "..");
-const d = process.env.VITE_DEV_SERVER_URL, E = e.join(process.env.APP_ROOT, "dist-electron"), f = e.join(process.env.APP_ROOT, "dist");
-let o = null;
-a.setApplicationMenu(null);
-const r = process.env.VITE_DEV_SERVER_URL !== void 0, u = r ? e.join(t, "preload.mjs") : e.join(
+import { app as o, Menu as w, BrowserWindow as p, globalShortcut as m } from "electron";
+import r from "path";
+import { fileURLToPath as E } from "node:url";
+import { execSync as R } from "node:child_process";
+import { exec as S } from "child_process";
+const c = r.dirname(E(import.meta.url));
+process.env.APP_ROOT = r.join(c, "..");
+const v = process.env.VITE_DEV_SERVER_URL, b = r.join(process.env.APP_ROOT, "dist-electron"), y = r.join(process.env.APP_ROOT, "dist");
+let e = null;
+const _ = o.requestSingleInstanceLock();
+_ ? o.on("second-instance", () => {
+  e && (e.isMinimized() && e.restore(), e.focus());
+}) : o.quit();
+function P() {
+  try {
+    const t = R("wmic computersystem get model,manufacturer", {
+      encoding: "utf8"
+    }).toLowerCase();
+    return t.includes("vmware") || t.includes("virtualbox") || t.includes("qemu") || t.includes("hyper-v") || t.includes("kvm");
+  } catch {
+    return !1;
+  }
+}
+const i = /* @__PURE__ */ new Set();
+function f() {
+  S(
+    'powershell -Command "Get-Disk | Where-Object BusType -eq USB | Select-Object -ExpandProperty Number"',
+    (s, t) => {
+      if (s) {
+        console.error("PowerShell error:", s);
+        return;
+      }
+      const a = t.trim();
+      if (!a) return;
+      const u = new Set(
+        a.split(`
+`).map((n) => n.trim()).filter(Boolean)
+      );
+      for (const n of u)
+        i.has(n) || (console.log("New USB drive detected:", n), i.add(n), o.quit());
+      for (const n of i)
+        u.has(n) || i.delete(n);
+    }
+  );
+}
+setInterval(f, 4e3);
+f();
+w.setApplicationMenu(null);
+const l = process.env.VITE_DEV_SERVER_URL !== void 0, T = l ? r.join(c, "preload.mjs") : r.join(
   process.resourcesPath,
   "app.asar",
   "dist-electron",
   "preload.mjs"
-), s = r ? d : e.join(process.resourcesPath, "app.asar", "dist", "index.html");
-function l() {
-  o = new i({
+), d = l ? v : r.join(process.resourcesPath, "app.asar", "dist", "index.html");
+function h() {
+  e = new p({
     fullscreen: !0,
     kiosk: !0,
-    icon: e.join(t, "../../build/icon.ico"),
+    alwaysOnTop: !0,
+    focusable: !0,
+    icon: r.join(c, "../../build/icon.ico"),
     webPreferences: {
-      preload: u,
+      preload: T,
       contextIsolation: !0,
       nodeIntegration: !1
     }
-  }), r ? o.loadURL(s) : o.loadFile(s), o.on("closed", () => {
-    o = null;
+  }), l ? e.loadURL(d) : e.loadFile(d), e.on("closed", () => {
+    e = null;
   });
 }
-n.on("window-all-closed", () => {
-  process.platform !== "darwin" && (n.quit(), o = null);
+o.on("window-all-closed", () => {
+  process.platform !== "darwin" && (o.quit(), e = null);
 });
-n.on("activate", () => {
-  i.getAllWindows().length === 0 && l();
+o.on("activate", () => {
+  p.getAllWindows().length === 0 && h();
 });
-n.whenReady().then(async () => {
-  l();
+o.whenReady().then(async () => {
+  h();
+  const s = [
+    "Alt+Tab",
+    "Alt+F4",
+    "Command+Q",
+    "Control+Shift+Esc",
+    "Command+Option+Esc",
+    "F11"
+  ];
+  P() && o.quit(), s.forEach((t) => {
+    m.register(t, () => !1);
+  });
 });
-n.on("will-quit", () => {
-  c.unregisterAll();
+o.on("will-quit", () => {
+  m.unregisterAll();
 });
 export {
-  E as MAIN_DIST,
-  f as RENDERER_DIST,
-  d as VITE_DEV_SERVER_URL
+  b as MAIN_DIST,
+  y as RENDERER_DIST,
+  v as VITE_DEV_SERVER_URL
 };
