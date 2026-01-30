@@ -4,7 +4,7 @@ import ExamConcluded from "./pages/ExamConcluded";
 import ExamPage from "./pages/ExamPage";
 import InstructionsPage from "./pages/InstructionsPage";
 import ServerConnectPage from "./pages/ServerConnectPage";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { ToastContainer } from "react-toastify";
 

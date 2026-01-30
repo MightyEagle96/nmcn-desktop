@@ -53,12 +53,15 @@ axiosClient.interceptors.response.use(
     if (!error.response) {
       return Promise.reject(new Error("Network error"));
     }
+    if (error.response) {
+      //console.log(error.response);
+      const status = error.response.status;
+      const message = error.response.data;
 
-    //console.log(error.response);
-    const status = error.response.status;
-    const message = error.response.data;
+      return Promise.reject({ status, data: message });
+    }
 
-    return Promise.reject({ status, data: message });
+    return Promise.reject({ status: 500, data: "Network error" });
   },
 );
 

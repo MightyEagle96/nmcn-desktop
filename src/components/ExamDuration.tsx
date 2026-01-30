@@ -8,6 +8,7 @@ import { totalQuestionsCount } from "../redux/questionBanksSlice";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Send } from "@mui/icons-material";
+import ShowCalculator from "./Calculator";
 
 function ExamCountdown() {
   const [duration, setDuration] = useState(0); // ms
@@ -145,6 +146,9 @@ function ExamCountdown() {
   return (
     <>
       <div className="row align-items-center justify-content-end g-3">
+        <div className="col-auto">
+          <ShowCalculator />
+        </div>
         {/* TIMER */}
         <div className="col-auto d-flex justify-content-end">
           <Alert severity={severity} sx={{ mb: 0 }}>

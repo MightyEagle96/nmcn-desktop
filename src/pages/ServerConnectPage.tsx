@@ -38,7 +38,7 @@ const ServerConnectPage: React.FC = () => {
         timeout: TIMEOUT_MS,
       });
 
-      //setServerIp(ip);
+      setServerIp(ip);
       // ✅ success
       navigate("/login");
     } catch (err) {

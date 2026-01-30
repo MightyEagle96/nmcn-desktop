@@ -46,6 +46,7 @@ function CandidateLoginPage() {
       }
       setShow(true);
     } catch (error: any) {
+      console.log(error);
       toast.error(error.data);
     } finally {
       setLoading(false);
